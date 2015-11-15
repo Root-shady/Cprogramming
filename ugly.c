@@ -9,6 +9,7 @@ typedef struct{
     int length; // The array length, the elements in heap
     int capacity;
 }UglyArray;
+// Get the user input 
 int userInput(){
     int n;
     while(true){
@@ -20,6 +21,7 @@ int userInput(){
     }
     return n;
 }
+// Initial the heap
 UglyArray *initialUglyArray(int n){
     UglyArray *ugly = (UglyArray*)malloc(sizeof(UglyArray));
     if(ugly == NULL){
@@ -28,35 +30,25 @@ UglyArray *initialUglyArray(int n){
         }
     ugly->length = 0;
     // Roughly calculating the length of the array
-    ugly->array = (ElemType*)malloc((3n+1) * sizeof(ElemType));
+    ugly->array = (ElemType*)malloc((3*n+1) * sizeof(ElemType));
     if(ugly->array == NULL){
             printf("Error Memory Allocation");
             exit(-1);
         }
     // Adding the first element
-    ugly->array[0] = 1;
+    ugly->array[0].num = 1;
     ugly->capacity = 3*n+1;
     return ugly;
 }
+// Return the min(root) of the heap
 int getRoot(UglyArray *ugly){
     if(ugly->length == 0){
             printf("Empty Heap, Error Operation");
             exit(-1);
         }
-    return ugly->array[0];
+    return ugly->array[0].num;
 }
-void addNode(UglyArray *ugly, int n){
-//Value assignment, Not a good practice
-    ugly->array[ugly->length].num = n;
-    ugly->length ++;
-    upAdjust(UglyArray *ugly);
-}
-int removeRoot(UglyArray *ugly){
-    int result = getRoot(ugly);
-    ugly->array[0] = ugly->array[length-1];
-    ugly->length --;
-    downAdjust(ugly);
-}
+// Adjust the last element to the right place
 void upAdjust(UglyArray *ugly){
     // The index of the last element is ugly->length - 1
     int track = ugly->length-1;
@@ -74,13 +66,29 @@ void upAdjust(UglyArray *ugly){
     }
 
 }
-bool hasChildren(UglyArray ugly, int track){
-         
+//Detemrine a node had child or not
+bool hasChildren(UglyArray *ugly, int track){
+    return track*2 + 1 > ugly->length;     
 }
-int minChildIndex(UglyArray ugly, int track)
+// Return the smallest child of the node
 int minChildren(UglyArray *ugly, int track){
-        
-    }
+    // precondition --> hasChildren is true
+    //Determine if the node have right child
+    if(track*2+2 < ugly->length){
+        return ugly->array[track*2+1].num <ugly->array[track*2+2].num ?ugly->array[track*2+1].num:ugly->array[track*2+2].num;
+    }   
+    else{
+            return ugly->array[track*2+1].num;
+        } 
+}
+// Return the index of the smallest child node
+int minChildIndex(UglyArray *ugly, int track){
+    if(ugly->array[track*2+1].num == minChildren(ugly, track)){
+        return track*2+1;
+    } 
+    return track*2+2;
+}
+// Djust the root node to the proper plcae
 void downAdjust(UglyArray *ugly){
     int track = 0;
     while(track < ugly->length){
@@ -96,10 +104,22 @@ void downAdjust(UglyArray *ugly){
         else{
                 break;
             }
-        }            
+        }
     }
 }
 
+void addNode(UglyArray *ugly, int n){
+//Value assignment, Not a good practice
+    ugly->array[ugly->length].num = n;
+    ugly->length ++;
+    upAdjust(ugly);
+}
+int removeRoot(UglyArray *ugly){
+    int result = getRoot(ugly);
+    ugly->array[0] = ugly->array[ugly->length-1];
+    ugly->length --;
+    downAdjust(ugly);
+}
 int uglyNumber(UglyArray *ugly, int n){
     int count = 0, result = 0; while(count < n){
             if(result != getRoot(ugly)){
@@ -123,6 +143,7 @@ void main(int argc, char* argv[]){
     UglyArray *ugly = initialUglyArray(n);
     // Start to buid the heap, and maintain it
     int result = uglyNumber(ugly, n);
+    printf("The result %d", 2);
     // print out the result to notify the user
     free(ugly->array);
     free(ugly); 
