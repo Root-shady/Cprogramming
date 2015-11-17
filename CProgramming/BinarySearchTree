@@ -1,0 +1,15 @@
+BST(Binary Search Tree)
+    Insert and Remove  -->  O(logn)
+Each node have tree pointers, parent, left children, right children
+Invariant:(The definition of BST)
+    For all node x, if y is in the left subtree of x, then key(y) < key(x)
+    And if y is in the right subtree, we have key(y) >= key(x).
+
+find.min() delete() log(n)   O(h)
+find.Max() delete() log(n)   O(h)
+    rank(t) The number of nodes below it. Add another attribute in the node, notice that when you insert or delete, you need to update the node information.
+
+
+
+
+    
